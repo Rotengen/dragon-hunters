@@ -3,6 +3,37 @@ import random
 import time
 import os
 
+
+def getChar():
+    # figure out which function to use once, and store it in _func
+    if "_func" not in getChar.__dict__:
+        try:
+            # for Windows-based systems
+            import msvcrt  # If successful, we are on Windows
+            getChar._func = msvcrt.getch
+
+        except ImportError:
+            # for POSIX-based systems (with termios & tty support)
+            import tty
+            import sys
+            import termios  # raises ImportError if unsupported
+
+            def _ttyRead():
+                fd = sys.stdin.fileno()
+                oldSettings = termios.tcgetattr(fd)
+
+                try:
+                    tty.setcbreak(fd)
+                    answer = sys.stdin.read(1)
+                finally:
+                    termios.tcsetattr(fd, termios.TCSADRAIN, oldSettings)
+
+                return answer
+
+            getChar._func = _ttyRead
+
+    return getChar._func()
+
 #🖤 🖤 🖤 🖤 🖤 🖤 🖤 🖤     💛  🥖 🥖 🥖 🥖 🥖 🥖 🥖 🥖 🥖 🥖4 5 7 9 10 
 file1 = 'world1'
 file2 = 'world2'
@@ -777,7 +808,7 @@ while True:
         print("There is a mingel near you!")
         print("Type B to fight.")
         fight = True
-    key = input()
+    key = getChar()
     if health == 0:
         print("You have died!")
         input("Press Enter to respawn.")

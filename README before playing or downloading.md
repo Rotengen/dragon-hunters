@@ -1,13 +1,15 @@
 # dragon-hunters
-The game of dragon hunters
--How to play
-READ ME IMPORTANT INFORMATION
+## The game of dragon hunters
 
-1.Download version of your choice
+### How to play
 
-2.Move the py file into an empty regular folder
+* Download version of your choice
 
-3.Play using your editor or software.
+* Move the py file into an empty regular folder
+
+* Run program
+    - Via command line `python filename.py`
+    - Inside of your python IDE     
 
 Do not play while it is still in the downloads folder, and it does not work if on an online python compiler.
 
