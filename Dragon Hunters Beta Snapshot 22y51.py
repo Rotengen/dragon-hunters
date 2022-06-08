@@ -4,112 +4,16 @@ import random
 from functions import *
 from classes import Player, Dragon
 
-
-def draw_map(chunk, pl_x, pl_y, pl_z, health, hunger):
-    print("x = ", pl_x + chunk * 28, "  y = ",
-          pl_y + chunk * 28, "  z = ", pl_z)
-    y = 0
-    if pl_z == 0:
-        for i in range(28):
-            line = ""
-            x = 0
-            for i in range(28):
-                if x == pl_x:
-                    if y == pl_y:
-                        line = line + "█"
-                    else:
-                        if the_map[int(chunk)][int(x)][int(y)][0] == 1:
-                            line = line + "T"
-                        elif the_map[int(chunk)][int(x)][int(y)][0] == 6:
-                            line = line + " "
-                        else:
-                            line = line + "O"
-                else:
-                    if the_map[int(chunk)][int(x)][int(y)][0] == 1:
-                        line = line + "T"
-                    elif the_map[int(chunk)][int(x)][int(y)][0] == 6:
-                        line = line + " "
-                    else:
-                        line = line + "O"
-                line = line + " "
-                x = x + 1
-            print(line)
-            y = y + 1
-    else:
-        print("# # # # #")
-        row = ""
-        row += "# # "
-        row += identify(the_map[int(chunk)][pl_x][pl_y - 1][pl_z-1])
-        row += " # #"
-        print(row)
-        row = "# "
-        try:
-            row += identify(the_map[int(chunk)][pl_x - 1][pl_y][pl_z-1])
-        except:
-            row += "O"
-        row += " P "
-        try:
-            row += identify(the_map[int(chunk)][pl_x + 1][pl_y][pl_z-1])
-        except:
-            row += "O"
-        row += " #"
-        print(row)
-        row = ""
-        row += "# # "
-        try:
-            row += identify(the_map[int(chunk)][pl_x][pl_y + 1][pl_z-1])
-        except:
-            row += "O"
-        row += " # #"
-        print(row)
-        print("# # # # #")
-    if interface == 1:
-        gui = ""
-        for i in range(player.health):
-            gui += "🖤 "
-        for i in range(10-player.health):
-            gui += "💛 "
-        for i in range(2):
-            gui += " "
-        for i in range(hunger):
-            gui += "🥖 "
-    else:
-        gui = ""
-        for i in range(player.health):
-            gui += "H "
-        for i in range(10-player.health):
-            gui += "  "
-        for i in range(2):
-            gui += " "
-        for i in range(hunger):
-            gui += "F "
-    print(gui)
-
 player = Player()  # initialize player
 clear() # Clear the screen
 input("                           PRESS ENTER TO BEGIN                            ")
 
 # 🖤 🖤 🖤 🖤 🖤 🖤 🖤 🖤     💛  🥖 🥖 🥖 🥖 🥖 🥖 🥖 🥖 🥖 🥖4 5 7 9 10
-ach_list = ["A new day", "The Miner", "Dedicated Miner", "A Useful Metal", "Serious Miner",
-            "The Shinest Jewel", "Vast Riches", "One Nice Upgrade", "Power in My hands", "Dragon Hunters"]
-ach_des = []
-ach_des.append("Move around in your new world")
-ach_des.append("Mine stone with a pickaxe")
-ach_des.append("Mine 200+ stone")
-ach_des.append("Obtain Iron")
-ach_des.append("Mine over 36 iron")
-ach_des.append("Obtain Dragonite")
-ach_des.append("Mine 6 Dragonite, then cry in pain")
-ach_des.append("Upgrade a Iron tool to a Steel tool")
-ach_des.append("Craft a sword")
-ach_des.append("Kill a mingel")
+ach_list = ["A new day", "The Miner", "Dedicated Miner", "A Useful Metal", "Serious Miner", "The Shinest Jewel", "Vast Riches", "One Nice Upgrade", "Power in My hands", "Dragon Hunters"]
+ach_des = ["Move around in your new world", "Mine stone with a pickaxe", "Mine 200+ stone", "Obtain Iron", "Mine over 36 iron", "Obtain Dragonite", "Mine 6 Dragonite, then cry in pain", "Upgrade a Iron tool to a Steel tool", "Craft a sword", "Kill a mingel"]
 
 # initialize all data files if they don't already exist
-for i in range(1,4):
-    f = open('world'+ str(i), 'ab')
-    f.close()
-    f = open('player'+ str(i), 'ab')
-    f.close()
+initialize_files()
 
 # check if size of initialized world file is 0
 w1 = True
@@ -134,6 +38,7 @@ while interface != "1" or interface != "2":
         "Type 1 if your system can support Unicode, or 2 if your system can't: ")
     if interface == "1" or interface == "2":
         break
+
 load = ""
 while load != "l" or load != "n":
     load = input("L to load or N to start new world, and C to see changelog: ")
@@ -169,6 +74,7 @@ elif load == "l" and player.world == 3:
     print("No worlds found.")
     print("Generating a new world instead.")
     player.world = 4 - player.world
+    # Generating and saving new map and player
     the_map = generate_map()
     savemap(the_map, player.world)
     the_map = loadmap(player.world)
@@ -195,6 +101,7 @@ elif load == "n" and player.world == 0:
         if ans not in valid:
             print("Type a valid number which are", valid)
     player.world = ans
+    # load existing map and player
     the_map = loadmap(player.world)
     player.load(player.world)
 else:
@@ -212,33 +119,38 @@ else:
 
     ans = " "
     while ans not in valid:
-        ans = input("Type in the number of the world you want to load.")
+        ans = input("Type in the number of the world you want to load: ")
         if ans not in valid:
             print("Type a valid number which are", valid)
 
-        the_map = loadmap(player.world)
+        # Load Existing Map and Player
         player.world = ans
+        the_map = loadmap(player.world)
         player.load(player.world)
         time.sleep(1)
+
 autosave = 0
+
 while True:
     autosave += 1
     if autosave == 10:
         autosave = 0
         player.save()
         savemap(the_map, player.world)
+
     achievements = unwrap(player.goals)
     unlocked = 0
     fight = False
+    # Load a dragon object
     dragon = Dragon()
     print("Dragon radar detecting...")
-    print(dragon)
+    print(dragon.alive)
     print("Each dragon on the radar is shown by (x position, y position, player.health left)")
     print("P is the player, O is stone, and T is a tree,")
     print("C is coal, I is iron, D is dragonite, and M is magite")
     print("and # is a dark space that you cannnot see.")
-    print("type WASD keys to move, E to dig, and C to craft，U to use an item")
-    print("and F to eat food.")
+    print("type WASD keys to move, E to dig, and C to craft，U to use an item,")
+    print("F to eat food, and Q to quit.")
     print("I to open player.inventory, P to look at achievements, and V to save.")
     if interface == 1:
         print("For the bottom of the map, is the player.health andplayer.hunger GUIs where")
@@ -246,9 +158,11 @@ while True:
         print("and 🥖 represents hunger.")
     else:
         print("For the bottom of the map, is the player.health andplayer.hunger GUIs where")
-        print("H represents 1 ealth,")
-        print("and F represents unger.")
-    draw_map(player.chunk, player.x, player.y, player.z, player.health, player.hunger)
+        print("H represents 1 health,")
+        print("and F represents hunger.")
+    # draw the map    
+    draw_map(the_map, player, interface)
+    # check player status
     player.health, player.hunger = system_check(player.health, player.hunger)
     block = ""
     try:
@@ -972,6 +886,10 @@ while True:
                 else:
                     player.hunger += random.randint(1, 2)
                     player.inventory[36] -= 1
+    elif key == "Q" or key == "q":
+        savemap(the_map, player.world)
+        player.save()
+        quit()
     else:
         print("Please type a valid command")
     if unlocked == 1:

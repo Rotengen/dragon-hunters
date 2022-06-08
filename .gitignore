@@ -127,3 +127,10 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+player1
+player2
+player3
+world1
+world2
+world3

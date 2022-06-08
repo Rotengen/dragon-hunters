@@ -3,6 +3,7 @@ import random
 # player class
 class Player:
     def __init__(self):
+        self.name = ""
         self.world = 0
         self.goals = "0000000000"
         self.stone_mined = 0
@@ -14,9 +15,25 @@ class Player:
         self.x = 0
         self.y = 0
         self.z = 0
+        self.unlocked = 0
+        self.achievements = []
         self.inventory = []
         for i in range(48):
             self.inventory.append(0)
+
+    def move(self, x,y,z):
+        # need to implement achievements in the use class
+        if self.achievements[0] == "0":
+            self.unlocked = 1
+        if self.x != 27:
+            if self.z == 0:
+                self.x += x
+            
+        if self.y != 27:
+            if self.z == 0:
+                self.y += y
+        # need to implement Z axis moving
+        return 0
     
     def respawn(self):
         w = self.world

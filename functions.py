@@ -70,6 +70,94 @@ def loadmap(world):
     map = pickle.load(open('world' + str(world), 'rb'))
     return map
 
+
+def draw_map(the_map, player, interface):
+    print("x = ", player.x + player.chunk * 28, "  y = ",
+          player.y + player.chunk * 28, "  z = ", player.z)
+    y = 0
+    if player.z == 0:
+        for i in range(28):
+            line = ""
+            x = 0
+            for i in range(28):
+                if x == player.x:
+                    if y == player.y:
+                        line = line + "█"
+                    else:
+                        if the_map[int(player.chunk)][int(x)][int(y)][0] == 1:
+                            line = line + "T"
+                        elif the_map[int(player.chunk)][int(x)][int(y)][0] == 6:
+                            line = line + " "
+                        else:
+                            line = line + "O"
+                else:
+                    if the_map[int(player.chunk)][int(x)][int(y)][0] == 1:
+                        line = line + "T"
+                    elif the_map[int(player.chunk)][int(x)][int(y)][0] == 6:
+                        line = line + " "
+                    else:
+                        line = line + "O"
+                line = line + " "
+                x = x + 1
+            print(line)
+            y = y + 1
+    else:
+        print("# # # # #")
+        row = ""
+        row += "# # "
+        row += identify(the_map[int(player.chunk)][player.x][player.y - 1][player.z-1])
+        row += " # #"
+        print(row)
+        row = "# "
+        try:
+            row += identify(the_map[int(player.chunk)][player.x - 1][player.y][player.z-1])
+        except:
+            row += "O"
+        row += " P "
+        try:
+            row += identify(the_map[int(player.chunk)][player.x + 1][player.y][player.z-1])
+        except:
+            row += "O"
+        row += " #"
+        print(row)
+        row = ""
+        row += "# # "
+        try:
+            row += identify(the_map[int(player.chunk)][player.x][player.y + 1][player.z-1])
+        except:
+            row += "O"
+        row += " # #"
+        print(row)
+        print("# # # # #")
+    if interface == 1:
+        gui = ""
+        for i in range(player.health):
+            gui += "🖤 "
+        for i in range(10-player.health):
+            gui += "💛 "
+        for i in range(2):
+            gui += " "
+        for i in range(player.hunger):
+            gui += "🥖 "
+    else:
+        gui = ""
+        for i in range(player.health):
+            gui += "H "
+        for i in range(10-player.health):
+            gui += "  "
+        for i in range(2):
+            gui += " "
+        for i in range(player.hunger):
+            gui += "F "
+    print(gui)
+
+def initialize_files():
+    for i in range(1, 4):
+        f = open('world' + str(i), 'ab')
+        f.close()
+        f = open('player' + str(i), 'ab')
+        f.close()
+
 def unwrap(string):
     theset = []
     for letter in string:
